@@ -55,6 +55,7 @@ Added features X, Y, and Z.
 Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
 
 * [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+* [Extension API] (https://code.visualstudio.com/api)
 
 ## Working with Markdown
 
