@@ -1,5 +1,6 @@
 // Document.ts
 import * as fs from 'fs';
+import { runInThisContext } from 'vm';
 import * as utils from "./utils";
 
 export interface contentData_t {
@@ -76,6 +77,19 @@ export class CDocument {
 	private posFromLineNum(lineNum: number) {
 		let line = this._document[lineNum - 1];
 		return line.nStrt;
+	}
+
+	// TODO: wait to test
+	public itemIdxByLineNum(lineNum: number): number {
+		let prvLineNum = Number.MAX_VALUE;
+		for (let key of this._mapContents.keys()) {
+			let curLineNum = key;
+			if (lineNum >= prvLineNum && lineNum < curLineNum) {
+				return prvLineNum;
+			}
+			prvLineNum = curLineNum;
+		};
+		return 0;
 	}
 
 	// TODO: wait to test

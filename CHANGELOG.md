@@ -10,3 +10,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Parse the contents of novel
 - Click to goto the line of the content
+- Support to hightlight the item of contents' treeview corresponding to the current row

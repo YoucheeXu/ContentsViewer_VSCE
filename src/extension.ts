@@ -7,15 +7,20 @@ import { ContentsTreeView, Content } from "./contentsTreeView";
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	const contentsProvider = new ContentsTreeView();
-	vscode.window.registerTreeDataProvider('ContentsViewer-view', contentsProvider);
+	// const contentsProvider = new ContentsTreeView();
+	// vscode.window.registerTreeDataProvider('ContentsViewer-view', contentsProvider);
+	const treeview = new ContentsTreeView(context);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	vscode.commands.registerCommand('ContentsViewer.refresh', () => {
 		// The code you place here will be executed every time your command is executed
-		contentsProvider.refresh();
+		treeview.refresh();
+		const editor = vscode.window.activeTextEditor?.selection;
+		if (editor) {
+			treeview.highlightItemByCurLineNum();
+		}
 	});
 
 	vscode.commands.registerCommand('ContentsViewer.GotoLine', async (lineNum: number) => {

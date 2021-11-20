@@ -8,10 +8,16 @@ export class ContentsTreeView implements vscode.TreeDataProvider<Content> {
     private _onDidChangeTreeData: vscode.EventEmitter<Content | undefined | void> = new vscode.EventEmitter<Content | undefined | void>();
     readonly onDidChangeTreeData: vscode.Event<Content | undefined | void> = this._onDidChangeTreeData.event;
 
+    private _treeView: vscode.TreeView<Content>;
+
     private _cdoc: CDocument;
 
-    constructor() {
+    constructor(context: vscode.ExtensionContext) {
         this._cdoc = new CDocument();
+
+        this._treeView = vscode.window.createTreeView('ContentsViewer-view', { treeDataProvider: this, showCollapseAll: true, canSelectMany: true });
+        context.subscriptions.push(this._treeView);
+
         this.refresh();
     }
 
@@ -39,6 +45,26 @@ export class ContentsTreeView implements vscode.TreeDataProvider<Content> {
                 contentAry.push(ctt);
             });
             return Promise.resolve(contentAry);
+        }
+    }
+
+    getParent(element?: Content): any {
+        return null;
+    }
+
+    public highlightItemByCurLineNum() {
+        const editor = vscode.window.activeTextEditor?.selection;
+        if (editor) {
+            let curLineNum = editor.active.line + 1;
+            // const treeView = vscode.window.createTreeView("ContentsViewer-view", { treeDataProvider: this });
+            // reveal(element: T, options?: {expand: boolean | number, focus: boolean, select: boolean}): 
+            // { focus: true, select: false, expand: true }
+            // let item = this.getNodeAtPosition(itemNum);
+            // let item = this._cdoc.;
+            let lineNum = this._cdoc.itemIdxByLineNum(curLineNum);
+            let szContent = this._cdoc.mapContents.get(lineNum)?.szContent || "";
+            const content = new Content(szContent, vscode.TreeItemCollapsibleState.None, lineNum);
+            this._treeView.reveal(content, { focus: true });
         }
     }
 }
