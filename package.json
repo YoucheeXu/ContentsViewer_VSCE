@@ -4,7 +4,7 @@
     "description": "Show or edit contents of novel",
     "version": "0.0.1",
     "publisher": "Youchee",
-    "enableProposedApi": true,
+    "enableApiProposed": true,
     "private": true,
     "license": "MIT",
     "repository": {
@@ -44,6 +44,61 @@
                 }
             ]
         },
+        "menus": {
+            "view/title": [
+                {
+                    "command": "ContentsViewer.refresh",
+                    "group": "navigation@1"
+                },
+                {
+                    "submenu": "ContentsViewer.openMenu",
+                    "group": "navigation@2"
+                }
+            ],
+            "ContentsViewer.openMenu": [
+                {
+                    "command": "ContentsViewer.headIndex",
+                    "group": "1_index@1"
+                },
+                {
+                    "command": "ContentsViewer.specificIndex",
+                    "group": "1_index@2"
+                },
+                {
+                    "command": "ContentsViewer.exportContents",
+                    "group": "2_contents@1"
+                },
+                {
+                    "command": "ContentsViewer.importContents",
+                    "group": "2_contents@2"
+                },
+                {
+                    "submenu": "ContentsViewer.organizeContents",
+                    "group": "2_contents@3"
+                }
+            ],
+            "ContentsViewer.organizeContents": [
+                {
+                    "command": "ContentsViewer.numberContents",
+                    "group": "1_contents@1"
+                },
+                {
+                    "command": "ContentsViewer.alignNumbers",
+                    "group": "1_contents@2"
+                }
+            ]
+        },
+        "submenus": [
+            {
+                "id": "ContentsViewer.openMenu",
+                "label": "Open Menu",
+                "icon": "$(ellipsis)"
+            },
+            {
+                "id": "ContentsViewer.organizeContents",
+                "label": "Organize Contents"
+            }
+        ],
         "commands": [
             {
                 "command": "ContentsViewer.refresh",
@@ -55,17 +110,33 @@
             },
             {
                 "command": "ContentsViewer.GotoLine",
-                "title": "GotoLine"
+                "title": "Goto Line"
+            },
+            {
+                "command": "ContentsViewer.headIndex",
+                "title": "head Index"
+            },
+            {
+                "command": "ContentsViewer.specificIndex",
+                "title": "specific Index"
+            },
+            {
+                "command": "ContentsViewer.exportContents",
+                "title": "export Contents"
+            },
+            {
+                "command": "ContentsViewer.importContents",
+                "title": "import Contents"
+            },
+            {
+                "command": "ContentsViewer.numberContents",
+                "title": "number Contents"
+            },
+            {
+                "command": "ContentsViewer.alignNumbers",
+                "title": "align Numbers"
             }
-        ],
-        "menus": {
-            "view/title": [
-                {
-                    "command": "ContentsViewer.refresh",
-                    "group": "navigation"
-                }
-            ]
-        }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run package",

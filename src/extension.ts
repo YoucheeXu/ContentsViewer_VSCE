@@ -14,6 +14,14 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
+
+	vscode.commands.registerCommand('ContentsViewer.GotoLine', async (lineNum: number) => {
+		await vscode.commands.executeCommand('revealLine', {
+			lineNumber: lineNum,
+			at: "center"
+		});
+	});
+
 	vscode.commands.registerCommand('ContentsViewer.refresh', () => {
 		// The code you place here will be executed every time your command is executed
 		treeview.refresh();
@@ -23,12 +31,22 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
-	vscode.commands.registerCommand('ContentsViewer.GotoLine', async (lineNum: number) => {
-		await vscode.commands.executeCommand('revealLine', {
-			lineNumber: lineNum,
-			at: "center"
-		});
+	vscode.commands.registerCommand('ContentsViewer.headIndex', () => {
+		treeview.headIndex();
+		const editor = vscode.window.activeTextEditor?.selection;
+		if (editor) {
+			treeview.highlightItemByCurLineNum();
+		}
 	});
+
+	vscode.commands.registerCommand('ContentsViewer.specificIndex', () => {
+		treeview.specificIndex();
+		const editor = vscode.window.activeTextEditor?.selection;
+		if (editor) {
+			treeview.highlightItemByCurLineNum();
+		}
+	});
+
 	// context.subscriptions.push(disposable);
 }
 

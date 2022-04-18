@@ -15,7 +15,7 @@ interface line_t {
 	txt: string;
 }
 
-enum indexType_t {
+export enum indexType_t {
 	normIndex,
 	headIndex,
 	specificIndex
@@ -38,8 +38,8 @@ export class CDocument {
 		this.setParameters(1, '一二三四五六七八九十零百千０１２３４５６７８９0123456789', 7, "集部册卷篇章节话回折");
 	}
 
-	// TODO: wait to test
 	public setDoc(doc: string) {
+		this._document.length = 0;
 		this.splitDoc(doc);
 	}
 
@@ -51,7 +51,6 @@ export class CDocument {
 		}
 	}
 
-	// TODO: wait to test
 	private splitDoc(doc: string) {
 		let lineLst = doc.split(/\r\n/g);
 		let pos = 0;
@@ -92,7 +91,6 @@ export class CDocument {
 		return 0;
 	}
 
-	// TODO: wait to test
 	private addContent(nItem: number, szContentName: string, nLine: number, nLevel: number, szKeyWord: string) {
 		// LOGINFO("Doc AddContent: %s, Level : %d, nLine: %d", wszContentName, nLevel, nLine);
 
@@ -110,7 +108,6 @@ export class CDocument {
 		return -1;
 	}
 
-	// TODO wait to test
 	private indexContents(szRegExp: string, szKeyWord: string, nLevel: number): number {
 		let i = 0;
 		for (let idx = 0; idx < this._document.length; idx++) {
@@ -123,7 +120,6 @@ export class CDocument {
 		return i;
 	}
 
-	// TODO: wait to test
 	public setParameters(numOfBlankLineBetweenParagraphs: number, szNum: string, uCountX: number, szKeyWord: string) {
 		this._numOfBlankLineBetweenParagraphs = numOfBlankLineBetweenParagraphs;
 		this._numOfX = uCountX;
@@ -217,10 +213,10 @@ export class CDocument {
 
 	}
 
-	// TODO: wait to test
 	public parse(stIndexType: indexType_t = indexType_t.normIndex, szIndex?: string) {
 		let nMaxLevel = 0;
 		let nTotalNum = 0;
+		this._mapContents.clear();
 		if (indexType_t.normIndex === stIndexType) {
 
 			let wt = String(this._numOfX * 2);

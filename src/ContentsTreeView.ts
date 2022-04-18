@@ -1,16 +1,21 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { CDocument, contentData_t } from "./Document";
+import { indexType_t, contentData_t, CDocument } from "./Document";
 
 export class ContentsTreeView implements vscode.TreeDataProvider<Content> {
 
-    private _onDidChangeTreeData: vscode.EventEmitter<Content | undefined | void> = new vscode.EventEmitter<Content | undefined | void>();
-    readonly onDidChangeTreeData: vscode.Event<Content | undefined | void> = this._onDidChangeTreeData.event;
+    // private _onDidChangeTreeData: vscode.EventEmitter<Content | undefined | void> = new vscode.EventEmitter<Content | undefined | void>();
+    private _onDidChangeTreeData: vscode.EventEmitter<any> = new vscode.EventEmitter<any>();
+    // readonly onDidChangeTreeData: vscode.Event<Content | undefined | void> = this._onDidChangeTreeData.event;
+    readonly onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event;
 
     private _treeView: vscode.TreeView<Content>;
 
     private _cdoc: CDocument;
+
+    private _stIndexType = indexType_t.normIndex;
+    private _szIndex = "";
 
     constructor(context: vscode.ExtensionContext) {
         this._cdoc = new CDocument();
@@ -19,16 +24,71 @@ export class ContentsTreeView implements vscode.TreeDataProvider<Content> {
         context.subscriptions.push(this._treeView);
 
         this.refresh();
+
+        // langue Id = plaintext
     }
 
-    refresh(): void {
-        // this._onDidChangeTreeData.fire();
+    public refresh(): void {
         const txtDocument = vscode.window.activeTextEditor?.document;
         const name = txtDocument?.fileName;
         const langId = txtDocument?.languageId;
         console.log(`langue Id = ${langId}`);
         this._cdoc.setDoc(txtDocument?.getText() || "");
-        this._cdoc.parse();
+        this._cdoc.parse(this._stIndexType, this._szIndex);
+
+        this._onDidChangeTreeData.fire(undefined);
+    }
+
+    public headIndex(): void {
+        if (this._stIndexType === indexType_t.headIndex) {
+            // TODO: cancel checked
+            this._stIndexType = indexType_t.normIndex;
+            return this.refresh();
+        } else {
+            // TODO: check
+
+            this._stIndexType = indexType_t.headIndex;
+        }
+
+        const txtDocument = vscode.window.activeTextEditor?.document;
+        const name = txtDocument?.fileName;
+        const langId = txtDocument?.languageId;
+        console.log(`langue Id = ${langId}`);
+        this._cdoc.setDoc(txtDocument?.getText() || "");
+        this._cdoc.parse(indexType_t.headIndex);
+
+        this._onDidChangeTreeData.fire(undefined);
+    }
+
+    public specificIndex(): void {
+        if (this._stIndexType === indexType_t.specificIndex) {
+            // TODO: cancel checked
+            this._stIndexType = indexType_t.normIndex;
+            return this.refresh();
+        } else {
+            // TODO: check
+
+            this._stIndexType = indexType_t.specificIndex;
+        }
+
+        const txtDocument = vscode.window.activeTextEditor?.document;
+        const name = txtDocument?.fileName;
+        const langId = txtDocument?.languageId;
+        console.log(`langue Id = ${langId}`);
+        this._cdoc.setDoc(txtDocument?.getText() || "");
+        let _this = this;
+        vscode.window.showInputBox(
+            { // 这个对象中所有参数都是可选参数
+                password: false, // 输入内容是否是密码
+                ignoreFocusOut: true, // 默认false，设置为true时鼠标点击别的地方输入框不会消失
+                placeHolder: 'specificIndex', // 在输入框内的提示信息
+                prompt: '赶紧输入，不输入就赶紧滚', // 在输入框下方的提示信息
+                validateInput: function (text) { return null; } // 对输入内容进行验证并返回
+            }).then(function (szIndex) {
+                _this._szIndex = szIndex || "";
+                _this._cdoc.parse(indexType_t.specificIndex, szIndex);
+                _this._onDidChangeTreeData.fire(undefined);
+            });
     }
 
     getTreeItem(element: Content): vscode.TreeItem {
