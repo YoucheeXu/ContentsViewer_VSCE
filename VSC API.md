@@ -1,6 +1,7 @@
 ## [Programmatically executing a command](https://code.visualstudio.com/api/extension-guides/command)
 
-
+https://www.cnblogs.com/virde/p/vscode-extension-input-and-output.html
+https://code.visualstudio.com/api/references/icons-in-labels
 
 ```typescript
 import * as vscode from 'vscode';

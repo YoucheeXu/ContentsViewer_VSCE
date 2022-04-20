@@ -15,6 +15,8 @@ interface line_t {
 	txt: string;
 }
 
+export type mapContents_t = Map<number, contentData_t>;
+
 export enum indexType_t {
 	normIndex,
 	headIndex,
@@ -26,6 +28,7 @@ export class CDocument {
 
 	private _document = new Array<line_t>();
 
+	// private _mapContents = {} as mapContents_t;
 	private _mapContents = new Map<number, contentData_t>();
 
 	private _numOfBlankLineBetweenParagraphs: number = 1;
@@ -38,19 +41,22 @@ export class CDocument {
 		this.setParameters(1, '一二三四五六七八九十零百千０１２３４５６７８９0123456789', 7, "集部册卷篇章节话回折");
 	}
 
+	//
 	public setDoc(doc: string) {
 		this._document.length = 0;
 		this.splitDoc(doc);
 	}
 
 	// TODO: wait to test
-	public getDoc() {
+	public getDoc(): string {
 		let doc = "";
 		for (let line of this._document) {
 			doc += (line.txt + "\r\n");
 		}
+		return doc;
 	}
 
+	//
 	private splitDoc(doc: string) {
 		let lineLst = doc.split(/\r\n/g);
 		let pos = 0;
@@ -91,6 +97,7 @@ export class CDocument {
 		return 0;
 	}
 
+	//
 	private addContent(nItem: number, szContentName: string, nLine: number, nLevel: number, szKeyWord: string) {
 		// LOGINFO("Doc AddContent: %s, Level : %d, nLine: %d", wszContentName, nLevel, nLine);
 
@@ -108,6 +115,7 @@ export class CDocument {
 		return -1;
 	}
 
+	//
 	private indexContents(szRegExp: string, szKeyWord: string, nLevel: number): number {
 		let i = 0;
 		for (let idx = 0; idx < this._document.length; idx++) {
@@ -120,6 +128,7 @@ export class CDocument {
 		return i;
 	}
 
+	//
 	public setParameters(numOfBlankLineBetweenParagraphs: number, szNum: string, uCountX: number, szKeyWord: string) {
 		this._numOfBlankLineBetweenParagraphs = numOfBlankLineBetweenParagraphs;
 		this._numOfX = uCountX;
@@ -144,7 +153,7 @@ export class CDocument {
 
 	}
 
-	// TODO: wait to test
+	// 
 	public replaceLine(nLineNum: number, szTxt: string) {
 		this._document[nLineNum - 1].txt = szTxt;
 	}
@@ -213,10 +222,13 @@ export class CDocument {
 
 	}
 
+	//
 	public parse(stIndexType: indexType_t = indexType_t.normIndex, szIndex?: string) {
 		let nMaxLevel = 0;
 		let nTotalNum = 0;
-		this._mapContents.clear();
+		if (this._mapContents.size >= 1) {
+			this._mapContents.clear();
+		}
 		if (indexType_t.normIndex === stIndexType) {
 
 			let wt = String(this._numOfX * 2);
@@ -303,7 +315,6 @@ export class CDocument {
 		});
 	}
 
-	// TODO: align number
 	// FIXME: sometimes lose "1" in "12" and so on
 	public numberContents() {
 		let nPos = 0;
@@ -429,7 +440,7 @@ export class CDocument {
 		}
 	}
 
-	// TODO
+	// TODO:
 	// 1. exclusive level 2 up content	
 	// 2. Delete not empty content's empty mark
 	// 3. print a to-do list
